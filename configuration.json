@@ -1,0 +1,6 @@
+{
+    "fastText": {
+        "remoteRepositoryUrl": "https://github.com/facebookresearch/fastText.git",
+        "localRepositoryName": "fastTextRepository"
+    }
+}

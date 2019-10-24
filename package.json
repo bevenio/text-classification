@@ -1,0 +1,22 @@
+{
+  "name": "ai_word_classification",
+  "version": "1.0.0",
+  "description": "an ai text classification trainer",
+  "main": "index.js",
+  "scripts": {
+    "load": "yarn install && node scripts/clone-build-fasttext.js",
+    "transform:json_txt": "node scripts/transform-json-to-txt-data.js",
+    "fasttext": "./fastTextRepository/fasttext",
+    "example:run": "yarn fasttext predict trained_models/example_model.bin -",
+    "example:test": "yarn fasttext test trained_models/example_model.bin training_data/txt/example.data.valid",
+    "example:train": "yarn fasttext supervised -input training_data/txt/example.data.train -output trained_models/example_model",
+    "example:train:manually": "node scripts/exmaple-training.js"
+  },
+  "author": "Benjamin Brachmann",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.0"
+  }
+}

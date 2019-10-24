@@ -1,0 +1,54 @@
+{
+ "data": [
+  {
+   "text": "Rad fahren",
+   "labels": [
+    "sports"
+   ]
+  },
+  {
+   "text": "Laufen",
+   "labels": [
+    "sports"
+   ]
+  },
+  {
+   "text": "Freude treffen",
+   "labels": [
+    "relax",
+    "private",
+    "social"
+   ]
+  },
+  {
+   "text": "Laura treffen",
+   "labels": [
+    "private",
+    "social"
+   ]
+  },
+  {
+   "text": "Zuhause aufräumen",
+   "labels": [
+    "duty",
+    "private"
+   ]
+  },
+  {
+   "text": "Zur Bank fahren",
+   "labels": [
+    "duty",
+    "shopping",
+    "private"
+   ]
+  },
+  {
+   "text": "Rechnung überweisen",
+   "labels": [
+    "duty",
+    "shopping",
+    "financial"
+   ]
+  }
+ ]
+}
