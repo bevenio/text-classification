@@ -5,16 +5,30 @@ const request = require('request')
 const cheerio = require('cheerio')
 const Chance = require('chance')
 
-var chance = new Chance()
+const chance = new Chance()
 
 const settings = {
-    randomSiteAmount: 500,
-    maxRequestTimeout: 5000
+    randomSiteAmount: 30,
+    maxRequestTimeout: 5000,
+    outPutFilePath: './../../training_data/json_unlabeled/',
+    outputFilename: 'webcontent.unlabeled.json'
 }
 
 const state = {
     randomSiteRequestCounter: 0,
     responseNo: 0
+}
+
+let jsonFileContent = {
+    data: []
+}
+
+try {
+    const jsonData = require(settings.outPutFilePath + settings.outputFilename)
+    jsonFileContent = jsonData
+    console.log(chalk.green(`Using and extending already existing "${settings.outputFilename}"`))
+} catch(error) {
+    console.log(chalk.yellow(`Creating a new "${settings.outputFilename}" since there is none existing`))
 }
 
 const trackResponse = () => {
@@ -64,6 +78,27 @@ const makeRandomUrl = ({min = 3, max = 10}) => {
     return `http://${centerString}.com`
 }
 
+const saveToFile = () => {
+    fs.outputFile(
+        path.resolve(__dirname, (settings.outPutFilePath + settings.outputFilename)),
+        JSON.stringify(jsonFileContent, null, 1),
+        (error) => {
+            if(error) {
+                console.log(chalk.red(error))
+            } else {
+                console.log(chalk.green(`File has been saved successfully as "${settings.outputFilename}"`))
+            }
+        }
+    )
+}
+
+const writeFileContent = (sentence) => {
+    jsonFileContent.data.push({
+        text: sentence,
+        labels: []
+    })
+}
+
 const requestRandomSitesTitle = () => {
     if(state.randomSiteRequestCounter < settings.randomSiteAmount) {
         state.randomSiteRequestCounter += 1
@@ -72,9 +107,10 @@ const requestRandomSitesTitle = () => {
             log: false
         }).then(({url, body}) => {
             const site = cheerio.load(body)
-            const content = site('h1').text()
+            const content = site('h1').text().replace(/\s\s+/g, ' ')
             if(content) {
-                console.log(`[${new Date().toTimeString()}] ${chalk.cyan(url)}: ${content.replace(/\s\s+/g, ' ')}`)
+                console.log(`[${new Date().toTimeString()}] ${chalk.cyan(url)}: ${content}`)
+                writeFileContent(content)
             }
         }).catch(() => {
 
@@ -82,6 +118,7 @@ const requestRandomSitesTitle = () => {
             requestRandomSitesTitle()
         })
     } else {
+        saveToFile()
         console.log(chalk.green('DONE! 🤜🏻🤛🏼'))
     }
 }
