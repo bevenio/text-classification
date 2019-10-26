@@ -8,7 +8,7 @@ const Chance = require('chance')
 const chance = new Chance()
 
 const settings = {
-    randomSiteAmount: 30,
+    randomSiteAmount: 1000,
     maxRequestTimeout: 5000,
     outPutFilePath: './../../training_data/json_unlabeled/',
     outputFilename: 'webcontent.unlabeled.json'
@@ -124,5 +124,3 @@ const requestRandomSitesTitle = () => {
 }
 
 requestRandomSitesTitle()
-
-

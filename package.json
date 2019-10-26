@@ -11,7 +11,8 @@
     "example:test": "yarn fasttext test trained_models/example_model.bin training_data/txt/example.data.valid",
     "example:train": "yarn fasttext supervised -input training_data/txt/example.data.train -output trained_models/example_model",
     "example:train:manually": "node scripts/exmaple-training.js",
-    "experiment:experiment-1": "node scripts/experiments/experiment-1.js"
+    "experiment:experiment:1": "node scripts/experiments/experiment-1.js",
+    "experiment:experiment:2": "node scripts/experiments/experiment-2.js"
   },
   "author": "Benjamin Brachmann",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
     "request": "^2.88.0",
-    "stream-json": "^1.3.1"
+    "stream-json": "^1.3.1",
+    "zombie": "^6.1.4"
   }
 }
