@@ -12,7 +12,7 @@ const settings = {
     paths: {
         tags: 'tags?page={{page}}&tab=popular'
     },
-    requestTimeout: 1000,
+    requestTimeout: 0,
     requestWaitTime: 30000
 }
 
@@ -71,24 +71,30 @@ const saveTags = (tags) => {
     )
 }
 
-const constExtractTagsRecursively = (browser, tags, currentPage, lastPage, resolve, reject) => {
-    browser.visit(makeCompleteUrl(settings.url, replaceHandle(settings.paths.tags, {name: 'page', value: currentPage})), () => {
-        if(browser.status === 200) {
-            const newTags = browser.queryAll('#tags-browser > div > a').map(element => browser.text(element))
-            const mergedTags = [...tags, ...newTags]
-            console.log(`[${chalk.cyan(settings.url)}] extracted tags of page ${chalk.cyan(currentPage)}/${lastPage} (${mergedTags.length})`)
-            if(currentPage === lastPage) {
-                resolve(tags)
-                return
+const extractTagsRecursively = (browser, tags, currentPage, lastPage, resolve, reject) => {
+    setTimeout(() => {
+        browser.clickLink('#tags_list > div.pager.fr > a:last-child', () => {
+            if(browser.status === 200) {
+                const newTags = browser.queryAll('#tags-browser > div > a').map(element => browser.text(element))
+                const mergedTags = [...tags, ...newTags]
+                const percentage = Math.round(currentPage / lastPage * 100)
+                console.log(`[${chalk.cyan(settings.url)}] extracted tags of page ${currentPage}/${lastPage} (P: ${chalk.cyan(percentage + '%')} T:${mergedTags.length})`)
+                if(currentPage === lastPage) {
+                    resolve(tags)
+                    return
+                }
+                try {
+                    extractTagsRecursively(browser, mergedTags, (currentPage + 1), lastPage, resolve, reject)
+                } catch(error) {
+                    console.error(`[${chalk.cyan(settings.url)}] error extracting page ${chalk.orange((currentPage + 1))}/${lastPage}, trying again`)
+                    extractTagsRecursively(browser, mergedTags, (currentPage + 1), lastPage, resolve, reject)
+                }
+            } else {
+                console.error(`[${chalk.cyan(settings.url)}] error loading page ${chalk.orange((currentPage))}/${lastPage} - ${chalk.red(browser.status)}`)
+                extractTagsRecursively(browser, mergedTags, currentPage, lastPage, resolve, reject)
             }
-            try {
-                constExtractTagsRecursively(browser, mergedTags, (currentPage + 1), lastPage, resolve, reject)
-            } catch(error) {
-                console.error(`[${chalk.cyan(settings.url)}] error extracting page ${chalk.orange((currentPage + 1))}/${lastPage}, trying again`)
-                constExtractTagsRecursively(browser, mergedTags, (currentPage + 1), lastPage, resolve, reject)
-            }
-        }
-    })
+        })
+    }, settings.requestTimeout)
 }
 
 const extractTags = (browser) => {
@@ -97,7 +103,7 @@ const extractTags = (browser) => {
             if(browser.status === 200) {
                 const tagPages = Number(browser.text('#tags_list > div.pager.fr > a:nth-child(7) > span'))
                 console.log(`[${chalk.cyan(settings.url)}] has ${chalk.cyan(tagPages)} pages with tag content`)
-                constExtractTagsRecursively(browser, [], 1, tagPages, resolve, reject)
+                extractTagsRecursively(browser, [], 1, tagPages, resolve, reject)
             } else {
                 reject(browser.status)
             }
@@ -125,3 +131,6 @@ openWebsite(settings)
     }).catch(code => {
         console.error(`[${chalk.cyan(settings.url)}] responded with ${chalk.red(code)}`)
     })
+
+    // Keep node process alive "forever"
+    setInterval(() => {}, 1 << 30)
