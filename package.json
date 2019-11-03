@@ -12,7 +12,7 @@
     "example:train": "yarn fasttext supervised -input training_data/txt/example.data.train -output trained_models/example_model",
     "example:train:manually": "node scripts/exmaple-training.js",
     "experiment:experiment:1": "node scripts/experiments/experiment-1.js",
-    "experiment:experiment:2": "node scripts/experiments/experiment-2.js"
+    "experiment:experiment:2": "node --expose-gc scripts/experiments/experiment-2.js"
   },
   "author": "Benjamin Brachmann",
   "license": "ISC",
