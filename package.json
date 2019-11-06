@@ -12,7 +12,11 @@
     "example:train": "yarn fasttext supervised -input training_data/txt/example.data.train -output trained_models/example_model",
     "example:train:manually": "node scripts/exmaple-training.js",
     "experiment:experiment:1": "node scripts/experiments/experiment-1.js",
-    "experiment:experiment:2": "node --expose-gc scripts/experiments/experiment-2.js"
+    "experiment:experiment:2": "node scripts/experiments/experiment-2.js --expose-gc",
+    "experiment:experiment:2:forever": "forever start scripts/experiments/experiment-2.js --expose-gc",
+    "experiment:experiment:2:stop": "forever stopall",
+    "experiment:experiment:2:train": "yarn fasttext supervised -input scripts/experiments/outputs/stack_titles.txt -output trained_models/stack_model",
+    "experiment:experiment:2:run": "yarn fasttext predict trained_models/stack_model.bin -"
   },
   "author": "Benjamin Brachmann",
   "license": "ISC",
@@ -25,5 +29,9 @@
     "request": "^2.88.0",
     "stream-json": "^1.3.1",
     "zombie": "^6.1.4"
+  },
+  "devDependencies": {
+    "forever": "^1.0.0",
+    "nodemon": "^1.19.4"
   }
 }
